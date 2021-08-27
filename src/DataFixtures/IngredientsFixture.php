@@ -6,9 +6,12 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\DataFixtures\BaseFixture;
 use App\Entity\Ingredients;
+use App\Entity\IngredientsTranslation;
+use Gedmo\Translatable\TranslatableListener;
 
 
-class IngredientsFixture extends BaseFixture
+
+class IngredientsFixture extends Fixture
 {
 
     private static $ingredientsTitles = [
@@ -16,12 +19,22 @@ class IngredientsFixture extends BaseFixture
     salad', 'ice cream', 'vanilla'
     ];
 
-    public function loaddata(ObjectManager $manager)
+    public function load(ObjectManager $manager)
     {
-        $this->createMany(Ingredients::class, 10, function(Ingredients $ingredients, $count) {
-            $ingredients->setTitle($this->faker->randomElement(self::$ingredientsTitles))
-                ->setSlug($this->faker->name);
-        });
+        /**
+        *
+        * Gedmo\Translatable\TranslationListener
+        */
+        $ingredientsTran = new IngredientsTranslation('fr', 'title', 'morgen');
+        
+        $ingredients = new Ingredients();
+        $ingredients->setTitle('food')
+            ->setSlug('slug123')
+            ->addTranslation($ingredientsTran);
+        $manager->persist($ingredients);
+        $manager->flush();
+        $this->addReference('ingredients',$ingredients);
+
         
     }
 }

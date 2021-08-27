@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use App\Repository\TagRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use App\Entity\TagsTranslation;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=TagRepository::class)
@@ -18,6 +21,7 @@ class Tags
     private $id;
 
     /**
+     * @Gedmo\Translatable
      * @ORM\Column(type="string", length=255)
      */
     private $title;
@@ -26,6 +30,20 @@ class Tags
      * @ORM\Column(type="string", unique=true, length=255)
      */
     private $slug;
+
+    /**
+     * @ORM\OneToMany(
+     *   targetEntity="TagsTranslation",
+     *   mappedBy="object",
+     *   cascade={"persist", "remove"}
+     * )
+     */
+    private $translations;
+
+    public function __construct()
+    {
+        $this->translations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -55,4 +73,19 @@ class Tags
 
         return $this;
     }
+
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(TagsTranslation $t)
+    {
+        
+        if (!$this->translations->contains($t)) {
+            $this->translations[] = $t;
+            $t->setObject($this);
+        }
+    }
+
 }

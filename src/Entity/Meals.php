@@ -6,6 +6,7 @@ use App\Repository\MealsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=MealsRepository::class)
@@ -25,6 +26,7 @@ class Meals
     private $category;
 
     /**
+     * @Gedmo\Translatable
      * @ORM\Column(type="string", length=255)
      */
     private $title;
@@ -40,7 +42,8 @@ class Meals
     private $ingredients;
 
     /**
-     * @ORM\Column(type="string", length=1000)
+     * @Gedmo\Translatable
+     * @ORM\Column(type="text")
      */
     private $description;
 
@@ -50,11 +53,13 @@ class Meals
     private $status;
 
     /**
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $created_at;
 
     /**
+     * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $updated_at;
@@ -64,10 +69,13 @@ class Meals
      */
     private $deleted_at;
 
+    private $translations;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->ingredients = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -179,7 +187,7 @@ class Meals
     public function setCreatedAt(\DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
-
+        $this->status = 'created';
         return $this;
     }
 
@@ -206,5 +214,14 @@ class Meals
         $this->deleted_at = $deleted_at;
         $this->status = 'deleted';
         return $this;
+    }
+
+    public function addTranslation(MealsTranslation $t)
+    {
+        
+        if (!$this->translations->contains($t)) {
+            $this->translations[] = $t;
+            $t->setObject($this);
+        }
     }
 }

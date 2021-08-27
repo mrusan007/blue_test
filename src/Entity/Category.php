@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
@@ -18,6 +20,7 @@ class Category
     private $id;
 
     /**
+     * @Gedmo\Translatable
      * @ORM\Column(type="string", length=255)
      */
     private $title;
@@ -26,6 +29,13 @@ class Category
      * @ORM\Column(type="string", unique=true, length=255)
      */
     private $slug;
+
+    private $translations;
+
+    public function __construct()
+    {
+        $this->translations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -54,5 +64,14 @@ class Category
         $this->slug = $slug;
 
         return $this;
+    }
+
+    public function addTranslation(CategoryTranslation $t)
+    {
+        
+        if (!$this->translations->contains($t)) {
+            $this->translations[] = $t;
+            $t->setObject($this);
+        }
     }
 }

@@ -7,21 +7,33 @@ use Doctrine\Persistence\ObjectManager;
 
 use App\DataFixtures\BaseFixture;
 use App\Entity\Tags;
+use App\Entity\TagsTranslation;
+use Gedmo\Translatable\TranslatableListener;
 
 
-class TagsFixture extends BaseFixture
+class TagsFixture extends Fixture
 {
 
     private static $tagsTitles = [
     'vegeterian', '!vegeterian', 'homemade', 'foolsonly', 'fasttotoilet',
     ];
 
-    public function loaddata(ObjectManager $manager)
+    public function load(ObjectManager $manager)
     {
-        $this->createMany(Tags::class, 10, function(Tags $tags, $count) {
-            $tags->setTitle($this->faker->randomElement(self::$tagsTitles))
-                ->setSlug($this->faker->name);
-        });
+        /**
+        *
+        * Gedmo\Translatable\TranslationListener
+        */
+        $tagsTran = new TagsTranslation('fr', 'title', 'morgen');
+        
+        $tags = new Tags();
+        $tags->setTitle('food')
+            ->setSlug('slug123')
+            ->addTranslation($tagsTran);
+        $manager->persist($tags);
+        $manager->flush();
+        $this->addReference('tags',$tags);
+
         
     }
 }

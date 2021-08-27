@@ -6,12 +6,12 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 use App\DataFixtures\BaseFixture;
-use App\DataFixtures\CategorysFixture;
+use App\DataFixtures\CategoriesFixture;
 use App\DataFixtures\TagsFixture;
 use App\DataFixtures\IngredientsFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use App\Entity\Meals;
-
+use \Datetime;
 
 
 class MealsFixture extends Fixture implements DependentFixtureInterface
@@ -25,35 +25,33 @@ class MealsFixture extends Fixture implements DependentFixtureInterface
             'pumpkin chilli'
             );
 
-        for($j=0;$j<10;$j++){
         
-        $random1 = rand(0,9);
-        $random2 = rand(0,9);
-        $refrenceCategory = $this->getReference("App\Entity\Category_$random1");
-        $refrenceTags1 = $this->getReference("App\Entity\Tags_$random1");
-        $refrenceTags2 = $this->getReference("App\Entity\Tags_$random2");
-        $refrenceIngredients1 = $this->getReference("App\Entity\Ingredients_$random1");
-        $refrenceIngredients2 = $this->getReference("App\Entity\Ingredients_$random2");
+        
+       
+        $refrenceCategory = $this->getReference("category");
+        $refrenceTags1 = $this->getReference("tags");
+        $refrenceIngredients1 = $this->getReference("ingredients");
+        
         
         $meals = new Meals();
-        $meals->setTitle($mealsTitles[$random1])
+        $meals->setTitle($mealsTitles[2])
             ->setCategory($refrenceCategory)
             ->addTag($refrenceTags1)
-            ->addTag($refrenceTags2)
             ->addIngredient($refrenceIngredients1)
-            ->addIngredient($refrenceIngredients2);
+            ->setDescription('Opis')
+            ->setCreatedAt(new DateTime('2011-01-01T15:03:01.012345Z'));
             
             
         $manager->persist($meals);
         $manager->flush();
-        }
+        
         
     }
 
     public function getDependencies():array
     {
         return [
-            CategorysFixture::class,
+            CategoriesFixture::class,
             TagsFixture::class,
             IngredientsFixture::class,
         ];
