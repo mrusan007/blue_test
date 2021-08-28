@@ -8,12 +8,15 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use App\Entity\MealsTranslation;
+use Knp\DoctrineBehaviors\Contract\Entity\SoftDeletableInterface;
+use Knp\DoctrineBehaviors\Model\SoftDeletable\SoftDeletableTrait;
 
 /**
  * @ORM\Entity(repositoryClass=MealsRepository::class)
  */
-class Meals
+class Meals implements SoftDeletableInterface
 {
+    use SoftDeletableTrait;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -65,10 +68,6 @@ class Meals
      */
     private $updated_at;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $deleted_at;
 
       /**
      * @ORM\OneToMany(
@@ -180,7 +179,7 @@ class Meals
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(string $status):self
     {
         $this->status = $status;
 
@@ -212,17 +211,6 @@ class Meals
         return $this;
     }
 
-    public function getDeletedAt(): ?\DateTimeInterface
-    {
-        return $this->deleted_at;
-    }
-
-    public function setDeletedAt(?\DateTimeInterface $deleted_at): self
-    {
-        $this->deleted_at = $deleted_at;
-        $this->status = 'deleted';
-        return $this;
-    }
 
     public function addTranslation(array $objects)
     {

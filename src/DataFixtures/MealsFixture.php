@@ -9,13 +9,13 @@ use App\DataFixtures\BaseFixture;
 use App\DataFixtures\CategoriesFixture;
 use App\DataFixtures\TagsFixture;
 use App\DataFixtures\IngredientsFixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+
 use App\Entity\Meals;
 use App\Entity\MealsTranslation;
 use \Datetime;
 use Faker\Factory;
 
-class MealsFixture extends Fixture implements DependentFixtureInterface
+class MealsFixture extends Fixture
 {
 
     protected $faker;
@@ -44,37 +44,38 @@ class MealsFixture extends Fixture implements DependentFixtureInterface
             new MealsTranslation('fr','description',"translation_desc_fr_$i")
         );
         
+        
         $meals = new Meals();
-        $meals->setTitle($this->faker->randomElement($mealsTitles))
+        $meals->setTitle($mealsTitles[$i])
             ->setCategory($refrenceCategory)
             ->addTag($refrenceTags)
             ->addIngredient($refrenceIngredients1)
             ->addIngredient($refrenceIngredients2)
             ->setDescription($this->faker->name)
             ->addTranslation($translations);
+
         
-        // if($i%2==0){
-        //     $meals->setCreatedAt($this->faker->dateTime)
-        //     ->setUpdatedAt($this->faker->dateTime);
-        // }
-        // elseif($i%3==0){
-        //     $meals->setCreatedAt($this->faker->dateTime)
-        //     ->setDeletedAt($this->faker->dateTime);
-        // }
+        
+        if($i%2==0){
+            $meals->setCreatedAt($this->faker->dateTime)
+            ->setUpdatedAt($this->faker->dateTime);
+        }
+        else{
+            $meals->setCreatedAt($this->faker->dateTime);
+        }
+
+        // cheap trick
+        if($mealsTitles[$i] == 'cake'){
+            $meals->setStatus('deleted');
+        }
             
             
         $manager->persist($meals);
         $manager->flush();
+        
         }
         
     }
 
-    public function getDependencies():array
-    {
-        return [
-            CategoriesFixture::class,
-            TagsFixture::class,
-            IngredientsFixture::class,
-        ];
-    }
+   
 }

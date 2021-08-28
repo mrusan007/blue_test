@@ -2,6 +2,9 @@
     "behat/transliterator": {
         "version": "v1.3.0"
     },
+    "brick/math": {
+        "version": "0.9.3"
+    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.2"
     },
@@ -112,6 +115,9 @@
     "gedmo/doctrine-extensions": {
         "version": "v3.1.0"
     },
+    "knplabs/doctrine-behaviors": {
+        "version": "2.3.3"
+    },
     "laminas/laminas-code": {
         "version": "4.4.2"
     },
@@ -120,6 +126,9 @@
     },
     "myclabs/deep-copy": {
         "version": "1.10.2"
+    },
+    "nette/utils": {
+        "version": "v3.2.3"
     },
     "nikic/php-parser": {
         "version": "v4.12.0"
@@ -185,6 +194,12 @@
     },
     "psr/log": {
         "version": "1.1.4"
+    },
+    "ramsey/collection": {
+        "version": "1.2.1"
+    },
+    "ramsey/uuid": {
+        "version": "4.2.1"
     },
     "sebastian/cli-parser": {
         "version": "1.0.1"
