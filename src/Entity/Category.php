@@ -6,6 +6,7 @@ use App\Repository\CategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
+use App\Entity\CategoryTranslation;
 
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
@@ -30,6 +31,13 @@ class Category
      */
     private $slug;
 
+     /**
+     * @ORM\OneToMany(
+     *   targetEntity="CategoryTranslation",
+     *   mappedBy="object",
+     *   cascade={"persist", "remove"}
+     * )
+     */
     private $translations;
 
     public function __construct()
@@ -66,12 +74,13 @@ class Category
         return $this;
     }
 
-    public function addTranslation(CategoryTranslation $t)
+    public function addTranslation(array $objects)
     {
-        
-        if (!$this->translations->contains($t)) {
-            $this->translations[] = $t;
-            $t->setObject($this);
+        foreach($objects as $translation){
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setObject($this);
         }
+    }
     }
 }

@@ -30,6 +30,13 @@ class Ingredients
      */
     private $slug;
 
+     /**
+     * @ORM\OneToMany(
+     *   targetEntity="IngredientsTranslation",
+     *   mappedBy="object",
+     *   cascade={"persist", "remove"}
+     * )
+     */
     private $translations;
 
     public function __construct()
@@ -66,12 +73,13 @@ class Ingredients
         return $this;
     }
 
-    public function addTranslation(IngredientsTranslation $t)
+    public function addTranslation(array $objects)
     {
-        
-        if (!$this->translations->contains($t)) {
-            $this->translations[] = $t;
-            $t->setObject($this);
+        foreach($objects as $translation){
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setObject($this);
         }
+    }
     }
 }

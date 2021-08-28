@@ -79,13 +79,14 @@ class Tags
         return $this->translations;
     }
 
-    public function addTranslation(TagsTranslation $t)
+    public function addTranslation(array $objects)
     {
-        
-        if (!$this->translations->contains($t)) {
-            $this->translations[] = $t;
-            $t->setObject($this);
+        foreach($objects as $translation){
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setObject($this);
         }
+    }
     }
 
 }

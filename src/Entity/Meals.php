@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use App\Entity\MealsTranslation;
 
 /**
  * @ORM\Entity(repositoryClass=MealsRepository::class)
@@ -69,6 +70,13 @@ class Meals
      */
     private $deleted_at;
 
+      /**
+     * @ORM\OneToMany(
+     *   targetEntity="MealsTranslation",
+     *   mappedBy="object",
+     *   cascade={"persist", "remove"}
+     * )
+     */
     private $translations;
 
     public function __construct()
@@ -216,12 +224,13 @@ class Meals
         return $this;
     }
 
-    public function addTranslation(MealsTranslation $t)
+    public function addTranslation(array $objects)
     {
-        
-        if (!$this->translations->contains($t)) {
-            $this->translations[] = $t;
-            $t->setObject($this);
+        foreach($objects as $translation){
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setObject($this);
         }
+    }
     }
 }

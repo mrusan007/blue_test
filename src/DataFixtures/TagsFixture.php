@@ -9,14 +9,12 @@ use App\DataFixtures\BaseFixture;
 use App\Entity\Tags;
 use App\Entity\TagsTranslation;
 use Gedmo\Translatable\TranslatableListener;
-
+use Faker\Factory;
 
 class TagsFixture extends Fixture
 {
 
-    private static $tagsTitles = [
-    'vegeterian', '!vegeterian', 'homemade', 'foolsonly', 'fasttotoilet',
-    ];
+    protected $faker;
 
     public function load(ObjectManager $manager)
     {
@@ -24,16 +22,26 @@ class TagsFixture extends Fixture
         *
         * Gedmo\Translatable\TranslationListener
         */
-        $tagsTran = new TagsTranslation('fr', 'title', 'morgen');
-        
-        $tags = new Tags();
-        $tags->setTitle('food')
-            ->setSlug('slug123')
-            ->addTranslation($tagsTran);
-        $manager->persist($tags);
-        $manager->flush();
-        $this->addReference('tags',$tags);
+        $tagsTitles = [
+            'vegeterian', '!vegeterian', 'homemade', 'foolsonly', 'fasttotoilet',
+            ];
+        $this->faker = Factory::create();
+        for($i=0;$i<count($tagsTitles);$i++){
 
+            
+            $translations = array(new TagsTranslation('es', 'title', "translate_es_$i"),
+                new TagsTranslation('fr', 'title', "translate_fr_$i")
+        );
+           
+
+            $tags = new Tags();
+            $tags->setTitle($tagsTitles[$i])
+                ->setSlug($this->faker->name)
+                ->addTranslation($translations);
+            $manager->persist($tags);
+            $manager->flush();
+            $this->addReference("tags_$i",$tags);
+        }
         
     }
 }
