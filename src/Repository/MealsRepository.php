@@ -47,4 +47,19 @@ class MealsRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findCategory(int $id): array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT c
+            FROM App\Entity\Meals c
+            WHERE c.category = :id
+            ORDER BY c.title ASC'
+        )->setParameter('id', $id);
+
+        // returns an array of Product objects
+        return $query->getResult();
+    }
 }
