@@ -48,7 +48,7 @@ class MealsRepository extends ServiceEntityRepository
     }
     */
 
-    public function findCategory(int $id): array
+    public function findCategoryInt(int $id): array
     {
         $entityManager = $this->getEntityManager();
 
@@ -61,5 +61,37 @@ class MealsRepository extends ServiceEntityRepository
 
         // returns an array of Product objects
         return $query->getResult();
+    }
+
+    public function findCategoryNotNull(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+            SELECT * FROM meals m
+            WHERE m.category_id is not null
+            ORDER BY m.title ASC
+            ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function findCategoryNull(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+            SELECT * FROM meals m
+            WHERE m.category_id is null
+            ORDER BY m.title ASC
+            ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
     }
 }
