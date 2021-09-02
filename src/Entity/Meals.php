@@ -36,7 +36,7 @@ class Meals implements SoftDeletableInterface
     private $title;
 
     /**
-     * @ORM\ManyToMany(targetEntity=App\Entity\Tags::class)
+     * @ORM\ManyToMany(targetEntity=Tags::class)
      */
     private $tags;
 

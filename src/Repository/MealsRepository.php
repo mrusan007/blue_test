@@ -50,17 +50,18 @@ class MealsRepository extends ServiceEntityRepository
 
     public function findCategoryInt(int $id): array
     {
-        $entityManager = $this->getEntityManager();
+        $conn = $this->getEntityManager()->getConnection();
 
-        $query = $entityManager->createQuery(
-            'SELECT c
-            FROM App\Entity\Meals c
-            WHERE c.category = :id
-            ORDER BY c.title ASC'
-        )->setParameter('id', $id);
+        $sql = '
+            SELECT * FROM meals m
+            WHERE m.category_id=?
+            ORDER BY m.title ASC
+            ';
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(1,$id);
+        $stmt->execute();
 
-        // returns an array of Product objects
-        return $query->getResult();
+        return $stmt->fetchAllAssociative();
     }
 
     public function findCategoryNotNull(): array
@@ -85,6 +86,22 @@ class MealsRepository extends ServiceEntityRepository
 
         $sql = '
             SELECT * FROM meals m
+            WHERE m.category_id is null
+            ORDER BY m.title ASC
+            ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function findTags(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+            SELECT * FROM meals_tag m
             WHERE m.category_id is null
             ORDER BY m.title ASC
             ';

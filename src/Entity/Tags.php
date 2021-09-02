@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\TagRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use App\Entity\TagsTranslation;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**

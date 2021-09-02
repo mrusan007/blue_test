@@ -13,6 +13,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class IndexController extends AbstractController
 {   
@@ -53,15 +54,24 @@ class IndexController extends AbstractController
     }
 
     #[Route('/', name: 'index')]
-    public function index(Request $request): Response
+    public function index(Request $request, SerializerInterface $serializer): Response
     {
 
-        $serializer = self::jsonService();
+        #$serializer = self::jsonService();
         $category_id = $request->query->get('category');
 
         
-        $meals = self::categoryFilter($category_id);
+        // $meals = self::categoryFilter($category_id);
+        $meals = array();
 
-        return new JsonResponse($serializer->serialize($meals, 'json'), 200, [], true);
+        $repository = $this->getDoctrine()->getRepository(Meals::class);
+
+        $milz= $repository->findAll();
+
+        
+
+        
+
+        return new JsonResponse($serializer->serialize($milz, 'json'), 200, [], true);
     }
 }
